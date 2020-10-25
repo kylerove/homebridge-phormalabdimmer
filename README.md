@@ -25,13 +25,12 @@
 To configure the plugin, add the following to the accessories section in `config.json` of Homebridge. The `i2c_address` must be in hexadecimal format, preceded by `0x`.
 
 ```json
-{
-    "accessory": "PhormalabDimmer",
-    "name": "Phormalab South",
-    "i2c_device": "/dev/i2c-1",
-    "i2c_address": "0x2c"
+    {
+        "accessory": "PhormalabDimmer",
+        "name": "Phormalab South",
+        "i2c_device": "/dev/i2c-1",
+        "i2c_address": "0x2c"
     }
-}
 ```
 
 # Help

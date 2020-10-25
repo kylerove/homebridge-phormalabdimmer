@@ -62,14 +62,17 @@ PhormalabDimmer.prototype = {
     getPowerState: function(callback) {
         this.getBrightness(function(err, brightness) {
             if (err) {
+                this.log('Error (getPowerState): '+err);
                 callback(err);
                 return;
             }
 
             if (brightness == 0) {
+                this.log('getPowerState: 0');
                 this.cache.state = false;
                 callback(null, false);
             } else {
+                this.log('getPowerState: '+brightness);
                 this.cache.state = true;
                 callback(null, true);
             }
@@ -79,8 +82,10 @@ PhormalabDimmer.prototype = {
         if (state && !this.cache.state) {
             this.setBrightness(100, function(err) {
                 if (err) {
+                    this.log('Error (setPowerState): '+err);
                     callback(err);
                 } else {
+                    this.log('setPowerState: '+100);
                     this.cache.state = true;
                     callback();
                 }
@@ -88,23 +93,27 @@ PhormalabDimmer.prototype = {
         } else if (!state && this.cache.state) {
             this.setBrightness(0, function(err) {
                 if (err) {
+                    this.log('Error (setPowerState): '+err);
                     callback(err);
                 } else {
+                    this.log('setPowerState: 0');
                     this.cache.state = false;
                     callback();
                 }
             }.bind(this));
         } else {
+            this.log('Error (setPowerState): unexpected no action taken');
             callback();
         }
     },
     readInteger: function(address, callback) {
         this.wire.readBytes(address, 2, function(error, res) {
             if (error) {
-                this.log(error);
+                this.log('Error (readInteger): '+error);
                 callback(error);
             } else {
                 let value = res[0];
+                this.log('readInteger: '+parseInt((value << 8) || res[1]));
                 callback(null, parseInt((value << 8) || res[1]));
             }
         }.bind(this));
@@ -116,27 +125,33 @@ PhormalabDimmer.prototype = {
 
         this.wire.writeBytes(address, bytes, function(error) {
             if (error) {
-                this.log(error);
+                this.log('Error (writeInteger): '+error);
                 callback(error);
                 return;
             }
+            
+            this.log('writeInteger: '+bytes[0]+' '+bytes[1]);
             callback();
         });
     },
     readBrightness: function(callback) {
         this.readInteger(this.brightness, function(err, brightness) {
             if (err) {
+                this.log('Error (readBrightness): '+err);
                 callback(err);
                 return;
             }
+            this.log('readBrightness: '+this.brightness);
         }.bind(this));
     },
     setBrightness: function(brightness, callback) {
         this.cache.brightness = brightness;
         this.writeInteger(this.brightness, brightness, function(err) {
             if (err) {
+                this.log('Error (setBrightness): '+err);
                 callback(err);
             } else {
+                this.log('setBrightness: '+brightness);
                 this.getPowerState(function(err, val){
                     if (!err) {
                         this.services.lightbulbService
