@@ -22,7 +22,7 @@
         "homebridge": ">=0.2.0"
     },
     "dependencies": {
-        "i2c": "^0.2.3",
+        "i2c": "abandonware/i2c"
         "npm": "^5.7.1"
     }
 }
