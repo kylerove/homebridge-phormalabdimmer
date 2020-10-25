@@ -6,7 +6,7 @@
 
 [Homebridge](https://homebridge.io) accessory plugin for [Phormalab infrared lamps](https://www.phormalab.it) that are connected to an I2C-capable device like a [Raspberry Pi](https://www.raspberrypi.org) connected to an [I2C board capable of 10 volt output](https://www.tindie.com/products/chathura/aptinex-i2c-dac-module-0-10v-mcp4725/#specs). This in turn, will provide input into a [proportional output solid state relay](http://www.crydom.com/en/products/control-relays/pcv-series/10pcv2415/).
 
-[![NPM](https://nodei.co/npm/homebridge-i2cledstrips.png?compact=true)](https://npmjs.org/package/homebridge-i2cledstrips)
+[![NPM](https://nodei.co/npm/homebridge-phormalabdimmer.png?compact=true)](https://npmjs.org/package/homebridge-phormalabdimmer)
 
 # Features
 * Control the infrared heat output from a lamp via dimmer function
