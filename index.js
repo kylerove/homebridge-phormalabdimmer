@@ -146,7 +146,7 @@ PhormalabDimmerPlatform.prototype.getPowerState = function(callback) {
     }.bind(this));
 }
     
-PhormalabDimmerPlatform.prototype.setPowerState(state, callback) {
+PhormalabDimmerPlatform.prototype.setPowerState = function(state, callback) {
     if (state && !this.cache.state) {
         this.setBrightness(100, function(err) {
             if (err) {
@@ -175,7 +175,7 @@ PhormalabDimmerPlatform.prototype.setPowerState(state, callback) {
     }
 }
     
-PhormalabDimmerPlatform.prototype.function readBrightness(callback) {
+PhormalabDimmerPlatform.prototype.readBrightness = function(callback) {
     dac.get().then((r) => {
         console.log(r);
         console.log('Get brightness: ' + brightness);
@@ -183,7 +183,7 @@ PhormalabDimmerPlatform.prototype.function readBrightness(callback) {
     }).catch(console.log);
 }
     
-PhormalabDimmerPlatform.prototype.setBrightness(brightness, callback) {
+PhormalabDimmerPlatform.prototype.setBrightness = function(brightness, callback) {
     this.cache.brightness = brightness;
     dac.set(brightness, this.lampID, true).then((r) => {
         console.log(r);
