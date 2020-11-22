@@ -21,6 +21,7 @@ class PhormalabDimmer {
         this.i2c_address = parseInt(this.config.i2c_address, 16) || 0x60;
         this.i2c_device = this.config.i2c_device || '/dev/i2c-1';
         this.lampNames = this.config.lamp_names || ['Phormalab'];
+        this.accessories = []
         
         // Enable config based DEBUG logging enable
         this.debug = config.debug || false;
@@ -43,11 +44,16 @@ class PhormalabDimmer {
             for (i = 1; i < (this.lampNames.length + 1); i++) {
                 if (typeof this.lampNames[i] !== 'undefined') {
                     debug("Creating accessory for", this.lampNames[i]);
-                    var newLamp = new PhormalabAccessory(this, this.dac, i, this.lampNames[i]);
+                    var newLamp = PhormalabAccessory(this, this.dac, i, this.lampNames[i]);
                     updateStatus(newLamp, i);
                 }
             }
         });
+    }
+
+    configureAccessory(accessory) {
+        this.accessories.push(accessory);
+    }
 
     function PhormalabAccessory(that, dac, channel, name) {
         this.log = that.log;
@@ -72,7 +78,7 @@ class PhormalabDimmer {
                 .setCharacteristic(Characteristic.SerialNumber, hostname + "-" + this.name + "-" + this.lampID)
                 .setCharacteristic(Characteristic.FirmwareRevision, "MCP4728");
             
-            this.accessory.addService(Service.Lightbulb, this.name);
+            this.accessory.addService(Service.Lightbulb, this.name, this.lampID);
             
             this.accessory
                 .getService(Service.Lightbulb)
@@ -177,6 +183,4 @@ class PhormalabDimmer {
             setTimeout(readBrightness, 500);
         }).catch(console.log);
     }
-}
-
-}
+};
