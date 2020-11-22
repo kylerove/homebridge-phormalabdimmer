@@ -25,9 +25,9 @@ class PhormalabDimmerPlatform {
         
         // Enable config based DEBUG logging enable
         this.debug = config.debug || false;
-        if (this.debug) {
+        //if (this.debug) {
             debug.enabled = true;
-        }
+        //}
 
         // check if required config elements exist
         if (this.lampNames.length == 0) {
