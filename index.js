@@ -31,11 +31,11 @@ module.exports = function(homebridge) {
 }
 
 // implement the platform plugin class
-class PhormalabDimmerPlatform implements StaticPlatformPlugin {
+class PhormalabDimmerPlatform  {
 
     private readonly log;
 
-    constructor(log: Logging, config: PlatformConfig, api: API) {
+    constructor(log, config, api) {
         this.log = log;
         log.info('PhormalabDimmer plugin initializing...');
         this.config = config;
