@@ -178,3 +178,5 @@ class PhormalabDimmer {
         }).catch(console.log);
     }
 }
+
+}
