@@ -33,8 +33,6 @@ module.exports = function(homebridge) {
 // implement the platform plugin class
 class PhormalabDimmerPlatform  {
 
-    private log;
-
     constructor(log, config, api) {
         this.log = log;
         log.info('PhormalabDimmer plugin initializing...');
