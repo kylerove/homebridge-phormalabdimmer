@@ -179,7 +179,7 @@ PhormalabDimmerPlatform.prototype.readBrightness = function(callback) {
     dac.get().then((r) => {
         console.log(r);
         console.log('Get brightness: ' + brightness);
-        setTimeout(setBrightness, 5000);
+        setTimeout(setBrightness, 500);
     }).catch(console.log);
 }
     
