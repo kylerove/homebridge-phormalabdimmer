@@ -1,5 +1,5 @@
 // require these libraries
-ar comms = require('ncd-red-comm');
+var comms = require('ncd-red-comm');
 var MCP4728 = require('ncd-red-mcp4728');
 
 // instantiate static platform plugin
