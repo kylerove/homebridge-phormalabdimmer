@@ -7,10 +7,10 @@ module.exports = function(homebridge) {
     Service = homebridge.hap.Service;
     Characteristic = homebridge.hap.Characteristic;
     UUIDGen = homebridge.hap.uuid;
-    homebridge.registerPlatform('PhormalabDimmer', PhormalabDimmer);
+    homebridge.registerPlatform('PhormalabDimmer', PhormalabDimmerPlatform);
 };
 
-class PhormalabDimmer {
+class PhormalabDimmerPlatform {
     
     contructor(log, config, api) {
         this.log = log;
@@ -29,6 +29,14 @@ class PhormalabDimmer {
             debug.enabled = true;
         }
 
+        // check if required config elements exist
+        if (this.lampNames.length == 0) {
+            this.log.error("Phormalab Dimmer configuration requires `lamp_names` to specify an array of at least one lamp name connected to the first MCP4728 DAC output.")
+        } else if (this.lampNames.length > 4) {
+            this.log.error("Phormalab Dimmer configuration only supports up to four `lamp_names` connected to the four MCP4728 DAC outputs.")
+        }
+        
+
         this.api.on('didFinishLaunching', () => {
             this.log("didFinishLaunching");
 
@@ -44,7 +52,7 @@ class PhormalabDimmer {
             for (i = 1; i < (this.lampNames.length + 1); i++) {
                 if (typeof this.lampNames[i] !== 'undefined') {
                     debug("Creating accessory for", this.lampNames[i]);
-                    var newLamp = PhormalabAccessory(this, this.dac, i, this.lampNames[i]);
+                    var newLamp = AddPhormalabAccessory(this, this.dac, i, this.lampNames[i]);
                     updateStatus(newLamp, i);
                 }
             }
@@ -54,133 +62,132 @@ class PhormalabDimmer {
     configureAccessory(accessory) {
         this.accessories.push(accessory);
     }
+}
 
-    function PhormalabAccessory(that, dac, channel, name) {
-        this.log = that.log;
-        this.name = name;
-        this.log("Determining if Phormalab lamp "+this.name+" on channel "+channel+" exists in HB database");
-        this.lampID = channel;
-        this.refresh = that.refresh;
-        this.cache = { 'brightness': 100,
-                       'state': false };
-        
-        var uuid = UUIDGen.generate(this.name + " - Phormalab");
-        
-        if (!getAccessoryByLampID(this.lampID)) {
-            this.log("Adding Phormalab lamp", this.name);
-            this.accessory = new Accessory(this.name, uuid, 10);
-            this.accessory.log = that.log;
-            this.accessory.context.lampID = channel;
-        
-            this.accessory.getService(Service.AccessoryInformation)
-                .setCharacteristic(Characteristic.Manufacturer, "Phormalab")
-                .setCharacteristic(Characteristic.Model, "Hotdoor")
-                .setCharacteristic(Characteristic.SerialNumber, hostname + "-" + this.name + "-" + this.lampID)
-                .setCharacteristic(Characteristic.FirmwareRevision, "MCP4728");
-            
-            this.accessory.addService(Service.Lightbulb, this.name, this.lampID);
-            
-            this.accessory
-                .getService(Service.Lightbulb)
-                .getCharacteristic(Characteristic.On)
-                .on('get', this.getPowerState.bind(this.accessory))
-                .on('set', this.setPowerState.bind(this.accessory));
-            
-            // this.addOptionalCharacteristic(Characteristic.HeatingThresholdTemperature);
-            this.accessory
-                .getService(Service.Lightbulb)
-                .addCharacteristic(new Characteristic.Brightness())
-                .on('get', this.getBrightness.bind(this.accessory))
-                .on('set', this.setBrightness.bind(this.accessory));
-                
-            this.accessory
-                .getService(Service.Lightbulb).log = this.log;
-                
-            //this.accessory.context.ChangeLamp = new ChangeLamp(this.accessory);
-            that.api.registerPlatformAccessories("homebridge-phormalabdimmer", "PhormalabDimmer", [this.accessory]);
-            myAccessories.push(this.accessory);
-            return this.accessory;
-        } else {
-            this.log("Existing Phormalab accessory", this.name);
-            return getAccessoryByLampID(this.lampID);
-        }
-    }
+PhormalabDimmerPlatform.prototype.AddPhormalabAccessory = function(that, dac, channel, name) {
+    this.log = that.log;
+    this.name = name;
+    this.log("Determining if Phormalab lamp "+this.name+" on channel "+channel+" exists in HB database");
+    this.lampID = channel;
+    this.refresh = that.refresh;
+    this.cache = { 'brightness': 100,
+                   'state': false };
     
-    function getAccessoryByLampID(lampID) {
-        var value;
-        myAccessories.forEach(function(accessory) {
-            // debug("getAccessoryByName zone", accessory.name, name);
-            if (accessory.context.lampID === lampID) {
-                value = accessory;
-            }
-        });
+    var uuid = UUIDGen.generate(this.name + " - Phormalab");
+    
+    if (!getAccessoryByLampID(this.lampID)) {
+        this.log("Adding Phormalab lamp", this.name);
+        this.accessory = new Accessory(this.name, uuid, 10);
+        this.accessory.log = that.log;
+        this.accessory.context.lampID = channel;
+    
+        this.accessory.getService(Service.AccessoryInformation)
+            .setCharacteristic(Characteristic.Manufacturer, "Phormalab")
+            .setCharacteristic(Characteristic.Model, "Hotdoor")
+            .setCharacteristic(Characteristic.SerialNumber, hostname + "-" + this.name + "-" + this.lampID)
+            .setCharacteristic(Characteristic.FirmwareRevision, "MCP4728");
         
-        return value;
+        this.accessory.addService(Service.Lightbulb, this.name, this.lampID);
+        
+        this.accessory
+            .getService(Service.Lightbulb)
+            .getCharacteristic(Characteristic.On)
+            .on('get', this.getPowerState.bind(this.accessory))
+            .on('set', this.setPowerState.bind(this.accessory));
+        
+        // this.addOptionalCharacteristic(Characteristic.HeatingThresholdTemperature);
+        this.accessory
+            .getService(Service.Lightbulb)
+            .addCharacteristic(new Characteristic.Brightness())
+            .on('get', this.getBrightness.bind(this.accessory))
+            .on('set', this.setBrightness.bind(this.accessory));
+            
+        this.accessory
+            .getService(Service.Lightbulb).log = this.log;
+            
+        //this.accessory.context.ChangeLamp = new ChangeLamp(this.accessory);
+        that.api.registerPlatformAccessories("homebridge-phormalabdimmer", "PhormalabDimmer", [this.accessory]);
+        myAccessories.push(this.accessory);
+        return this.accessory;
+    } else {
+        this.log("Existing Phormalab accessory", this.name);
+        return getAccessoryByLampID(this.lampID);
     }
+}
+    
+PhormalabDimmerPlatform.prototype.getAccessoryByLampID = function(lampID) {
+    var value;
+    myAccessories.forEach(function(accessory) {
+        // debug("getAccessoryByName zone", accessory.name, name);
+        if (accessory.context.lampID === lampID) {
+            value = accessory;
+        }
+    });
+    
+    return value;
+}
 
-    function getPowerState(callback) {
-        this.getBrightness(function(err, brightness) {
+PhormalabDimmerPlatform.prototype.getPowerState = function(callback) {
+    this.getBrightness(function(err, brightness) {
+        if (err) {
+            this.log('Error (getPowerState): '+err);
+            callback(err);
+            return;
+        }
+        if (brightness == 0) {
+            this.log('getPowerState: 0');
+            this.cache.state = false;
+            callback(null, false);
+        } else {
+            this.log('getPowerState: '+brightness);
+            this.cache.state = true;
+            callback(null, true);
+        }
+    }.bind(this));
+}
+    
+PhormalabDimmerPlatform.prototype.setPowerState(state, callback) {
+    if (state && !this.cache.state) {
+        this.setBrightness(100, function(err) {
             if (err) {
-                this.log('Error (getPowerState): '+err);
+                this.log('Error (setPowerState): '+err);
                 callback(err);
-                return;
-            }
-
-            if (brightness == 0) {
-                this.log('getPowerState: 0');
-                this.cache.state = false;
-                callback(null, false);
             } else {
-                this.log('getPowerState: '+brightness);
+                this.log('setPowerState: '+100);
                 this.cache.state = true;
-                callback(null, true);
+                callback();
             }
         }.bind(this));
+    } else if (!state && this.cache.state) {
+        this.setBrightness(0, function(err) {
+            if (err) {
+                this.log('Error (setPowerState): '+err);
+                callback(err);
+            } else {
+                this.log('setPowerState: 0');
+                this.cache.state = false;
+                callback();
+            }
+        }.bind(this));
+    } else {
+        this.log('Error (setPowerState): unexpected no action taken');
+        callback();
     }
+}
     
-    function setPowerState(state, callback) {
-        if (state && !this.cache.state) {
-            this.setBrightness(100, function(err) {
-                if (err) {
-                    this.log('Error (setPowerState): '+err);
-                    callback(err);
-                } else {
-                    this.log('setPowerState: '+100);
-                    this.cache.state = true;
-                    callback();
-                }
-            }.bind(this));
-        } else if (!state && this.cache.state) {
-            this.setBrightness(0, function(err) {
-                if (err) {
-                    this.log('Error (setPowerState): '+err);
-                    callback(err);
-                } else {
-                    this.log('setPowerState: 0');
-                    this.cache.state = false;
-                    callback();
-                }
-            }.bind(this));
-        } else {
-            this.log('Error (setPowerState): unexpected no action taken');
-            callback();
-        }
-    }
+PhormalabDimmerPlatform.prototype.function readBrightness(callback) {
+    dac.get().then((r) => {
+        console.log(r);
+        console.log('Get brightness: ' + brightness);
+        setTimeout(setBrightness, 5000);
+    }).catch(console.log);
+}
     
-    function readBrightness(callback) {
-        dac.get().then((r) => {
-            console.log(r);
-            console.log('Get brightness: ' + brightness);
-            setTimeout(setBrightness, 5000);
-        }).catch(console.log);
-    }
-    
-    function setBrightness(brightness, callback) {
-        this.cache.brightness = brightness;
-        dac.set(brightness, this.lampID, true).then((r) => {
-            console.log(r);
-            console.log('Set brightness: ' + brightness);
-            setTimeout(readBrightness, 500);
-        }).catch(console.log);
-    }
-};
+PhormalabDimmerPlatform.prototype.setBrightness(brightness, callback) {
+    this.cache.brightness = brightness;
+    dac.set(brightness, this.lampID, true).then((r) => {
+        console.log(r);
+        console.log('Set brightness: ' + brightness);
+        setTimeout(readBrightness, 500);
+    }).catch(console.log);
+}
