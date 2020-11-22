@@ -130,7 +130,8 @@ class PhormalabDimmer {
                 callback(null, true);
             }
         }.bind(this));
-    },
+    }
+    
     function setPowerState(state, callback) {
         if (state && !this.cache.state) {
             this.setBrightness(100, function(err) {
