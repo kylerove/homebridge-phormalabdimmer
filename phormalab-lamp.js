@@ -11,9 +11,12 @@ import {
 
 export class PhormalabLamp implements AccessoryPlugin {
 
-    private readonly log: Logging;
+    private readonly log;
   
-    private lampOn = false;
+    private lampStates = {
+                            On: false,
+                            Brightness:0
+                         };
   
     // This property must exist
     name: string;
@@ -21,7 +24,7 @@ export class PhormalabLamp implements AccessoryPlugin {
     private readonly lampService: Service;
     private readonly informationService: Service;
   
-    constructor(hap: HAP, log: Logging, dac: DAC, channel: CHANNEL, name: string) {
+    constructor(hap, log, dac, channel, name) {
         this.log = log;
         this.dac = dac;
         this.channel = channel;
@@ -46,10 +49,10 @@ export class PhormalabLamp implements AccessoryPlugin {
                 }.bind(this));
             })
             .on(CharacteristicEventTypes.SET, (value: CharacteristicValue, callback: CharacteristicSetCallback) => {
-                this.lampOn = value as boolean;
-                log.info("Lamp state was set to: " + (this.lampOn? "on": "off"));
+                this.lampStates.On = value as boolean;
+                log.info("Lamp state was set to: " + (this.lampStates.On? "on": "off"));
                 
-                if (this.lampOn) {
+                if (this.lampStates.On) {
                     this.setBrightness(100, function(err) {
                         if (err) {
                             log.info('Error (setPowerState): '+err);
@@ -59,7 +62,7 @@ export class PhormalabLamp implements AccessoryPlugin {
                             callback();
                         }
                     }.bind(this));
-                } else if (!this.lampOn) {
+                } else if (!this.lampStates.On) {
                     this.setBrightness(0, function(err) {
                         if (err) {
                             log.info('Error (setPowerState): '+err);
@@ -108,20 +111,28 @@ export class PhormalabLamp implements AccessoryPlugin {
         ];
     }
 
-    readBrightness(callback): void {
+    readBrightness(callback: CharacteristicGetCallback) {
         dac.get().then((r) => {
             log.info(r);
             log.info('Get brightness: ' + brightness);
             setTimeout(setBrightness, 500);
         }).catch(console.log);
+
+        // you must call the callback function
+        // the first argument should be null if there were no errors
+        // the second argument should be the value to return
+        callback(null, brightness);
     }
         
-    setBrightness(brightness, callback): void {
-        this.cache.brightness = brightness;
-        dac.set(brightness, this.lampID, true).then((r) => {
+    setBrightness(value: CharacteristicValue, callback: CharacteristicSetCallback) {
+        this.lampStates.Brightness = value as number;
+        dac.set(value, this.lampID, true).then((r) => {
             log.info(r);
             log.info('Set brightness: ' + brightness);
             setTimeout(readBrightness, 500);
         }).catch(console.log);
-
+        
+        // you must call the callback function
+        callback(null);
+    }
 }

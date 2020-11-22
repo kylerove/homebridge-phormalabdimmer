@@ -5,20 +5,20 @@ var MCP4728 = require('ncd-red-mcp4728');
 // instantiate static platform plugin
 //import {AccessoryPlugin, API, HAP, Logging, PlatformConfig, StaticPlatformPlugin} from "homebridge";
 //import {AddPhormalabLamp} from "phormalab-lamp.js";
+const AddPhormalabLamp = require('./phormalab-lamp.js')
 const PLATFORM_NAME = "PhormalabDimmer";
-let hap: HAP;
+let hap;
 
 // register the platform plugin
-export = (api: API) => {
+export = (api) => {
     hap = api.hap;
-    import {AddPhormalabLamp} from "phormalab-lamp.js";
     api.registerPlatform(PLATFORM_NAME, PhormalabDimmerPlatform);
 };
 
 // implement the platform plugin class
 class PhormalabDimmerPlatform implements StaticPlatformPlugin {
 
-    private readonly log: Logging;
+    private readonly log;
 
     constructor(log: Logging, config: PlatformConfig, api: API) {
         this.log = log;
