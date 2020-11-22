@@ -11,7 +11,7 @@ import {
 
 export class PhormalabLamp implements AccessoryPlugin {
 
-    private readonly log;
+    private log;
   
     private lampStates = {
                             On: false,
