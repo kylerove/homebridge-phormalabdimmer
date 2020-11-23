@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 
-function PhormalabLamp {
+function PhormalabLamp() {
     
     constructor(hap, log, dac, channel, name) {
         this.log = log;
