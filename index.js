@@ -65,7 +65,7 @@ class PhormalabDimmerPlatform  {
             log.info("Channel 3 lamp name: " + this.lampNames[2]);
             callback([
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 1, this.lampNames[0]),
-                new PhormalabLamp(this.api.hap, this.log, this.dac, 2, this.lampNames[1]).
+                new PhormalabLamp(this.api.hap, this.log, this.dac, 2, this.lampNames[1]),
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 3, this.lampNames[2])
             ]);
         }
