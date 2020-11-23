@@ -1,23 +1,14 @@
+"use strict";s
+
 // require these libraries
 var comms = require('ncd-red-comm');
 var MCP4728 = require('ncd-red-mcp4728');
-var PhormalabLamp = require('./phormalab-lamp')
+const PhormalabLamp = require('./phormalab-lamp')
 
 // platform plugin naming
 const PLATFORM_NAME = "PhormalabDimmer";
 const PLUGIN_NAME = "homebridge-phormalabdimmer";
 let hap;
-
-// initialize and register the platform
-module.exports = function(api) {
-    console.log("homebridge API version: " + api.version);
-    
-    // save hap
-    hap = api.hap;
-
-    // register platform
-    api.registerPlatform(PLATFORM_NAME, PhormalabDimmerPlatform);
-}
 
 // implement the platform plugin class
 class PhormalabDimmerPlatform  {
@@ -61,3 +52,14 @@ class PhormalabDimmerPlatform  {
         ]);
     }
 }
+
+// initialize and register the platform
+module.exports = function(api) {
+    console.log("homebridge API version: " + api.version);
+    
+    // save hap
+    hap = api.hap;
+
+    // register platform
+    api.registerPlatform(PLATFORM_NAME, PhormalabDimmerPlatform);
+};
