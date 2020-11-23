@@ -38,7 +38,7 @@ class PhormalabDimmerPlatform  {
             eeprom_persist_3: true,
             eeprom_persist_4: true,
         });
-
+        log.info(this.dac);
         log.info('PhormalabDimmer plugin finished initializing');
     }
 
