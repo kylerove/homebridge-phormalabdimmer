@@ -1,4 +1,4 @@
-"use strict";s
+"use strict";
 
 // require these libraries
 var comms = require('ncd-red-comm');
