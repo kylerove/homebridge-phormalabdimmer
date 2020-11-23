@@ -19,7 +19,7 @@ class PhormalabDimmerPlatform  {
         this.config = config;
         this.api = api;
         this.name = config.name;
-        this.i2c_address = parseInt(this.config.i2c_address, 16) || 0x60;
+        this.i2c_address = this.config.i2c_address || 0x60;
         this.i2c_device = this.config.i2c_device || '/dev/i2c-1';
         this.lampNames = this.config.lamp_names || ['Phormalab'];
 
@@ -32,6 +32,7 @@ class PhormalabDimmerPlatform  {
 
         log.info(`Expecting MCP4728 I²C DAC at address 0x${this.i2c_address.toString(16)} on bus ${this.i2c_device}`);
         this.comm = new comms.NcdI2C(1);
+        log.info(this.comm);
         this.dac = new MCP4728(this.i2c_address, this.comm, {
             eeprom_persist_1: true,
             eeprom_persist_2: true,
@@ -39,6 +40,10 @@ class PhormalabDimmerPlatform  {
             eeprom_persist_4: true,
         });
         log.info(this.dac);
+        
+        // check if dac initialized
+        //if (this.dac. == ) {}
+        
         log.info('PhormalabDimmer plugin finished initializing');
     }
 
