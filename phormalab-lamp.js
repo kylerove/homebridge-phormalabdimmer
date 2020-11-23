@@ -65,7 +65,7 @@ module.exports = class PhormalabLamp {
         this.informationService = new hap.Service.AccessoryInformation()
             .setCharacteristic(hap.Characteristic.Manufacturer, "Phormalab")
             .setCharacteristic(hap.Characteristic.Model, "Hotdoor")
-            .setCharacteristic(hap.Characteristic.SerialNumber, hostname + "-" + this.name + "-" + this.channel)
+            .setCharacteristic(hap.Characteristic.SerialNumber, this.name + "-" + this.channel)
             .setCharacteristic(hap.Characteristic.FirmwareRevision, "MCP4728")   
          
         log.info("Phormalab lamp '%s' created!", name);
