@@ -28,7 +28,7 @@ class PhormalabLamp {
                 }.bind(this));
             })
             .on("set", (value, callback) => {
-                this.lampStates.On = value as boolean;
+                this.lampStates.On = value;
                 log.info("Lamp state was set to: " + (this.lampStates.On? "on": "off"));
                 
                 if (this.lampStates.On) {
@@ -98,7 +98,7 @@ class PhormalabLamp {
     }
         
     setBrightness(value, callback) {
-        this.lampStates.Brightness = value as number;
+        this.lampStates.Brightness = value;
         dac.set(value, this.lampID, true).then((r) => {
             log.info(r);
             log.info('Set brightness: ' + brightness + '%');
