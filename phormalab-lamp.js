@@ -78,7 +78,7 @@ class PhormalabLamp {
 
     // called after accessory instantiation, returns all services that are associated with the accessory
     getServices() {
-        return 
+        return [
             this.informationService,
             this.lampService
         ];
