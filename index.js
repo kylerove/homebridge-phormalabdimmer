@@ -51,25 +51,25 @@ class PhormalabDimmerPlatform  {
 
     // retrieve all accessories exposed by the platform
     accessories(callback) {
-        if (this.lampNames.length == 1 and this.dac.initialized) {
+        if (this.lampNames.length == 1 && this.dac.initialized) {
             callback([
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 1, this.lampNames[0])
             ]);
         }
-        else if (this.lampNames.length == 2 and this.dac.initialized) {
+        else if (this.lampNames.length == 2 && this.dac.initialized) {
             callback([
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 1, this.lampNames[0]),
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 2, this.lampNames[1])
             ]);
         }
-        else if (this.lampNames.length == 3 and this.dac.initialized) {
+        else if (this.lampNames.length == 3 && this.dac.initialized) {
             callback([
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 1, this.lampNames[0]),
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 2, this.lampNames[1]),
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 3, this.lampNames[2])
             ]);
         }
-        else if (this.lampNames.length == 4 and this.dac.initialized) {
+        else if (this.lampNames.length == 4 && this.dac.initialized) {
             callback([
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 1, this.lampNames[0]),
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 2, this.lampNames[1]),
