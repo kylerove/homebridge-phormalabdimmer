@@ -2,32 +2,21 @@
 var comms = require('ncd-red-comm');
 var MCP4728 = require('ncd-red-mcp4728');
 
-// instantiate static platform plugin
-//import {AccessoryPlugin, API, HAP, Logging, PlatformConfig, StaticPlatformPlugin} from "homebridge";
-//import {AddPhormalabLamp} from "phormalab-lamp.js";
-const AddPhormalabLamp = require('./phormalab-lamp.js')
+// instantiate static platform plugin requirements and naming
+const PhormalabLamp = require('./phormalab-lamp')
 const PLATFORM_NAME = "PhormalabDimmer";
 const PLUGIN_NAME = "homebridge-phormalabdimmer";
 let hap;
 
-// register the platform plugin
-//module.export = (api) => {
-//    hap = api.hap;
-//    api.registerPlatform(PLATFORM_NAME, PhormalabDimmerPlatform);
-//};
-module.exports = function(homebridge) {
-    console.log("homebridge API version: " + homebridge.version);
+// initialize and register the platform
+module.exports = function(api) {
+    console.log("homebridge API version: " + api.version);
+    
+    // save hap
+    hap = api.hap;
 
-    // Accessory must be created from PlatformAccessory Constructor
-    Accessory = homebridge.platformAccessory;
-
-    // Service and Characteristic are from hap-nodejs
-    Service = homebridge.hap.Service;
-    Characteristic = homebridge.hap.Characteristic;
-
-    // For platform plugin to be considered as dynamic platform plugin,
-    // registerPlatform(pluginName, platformName, constructor, dynamic), dynamic must be true
-    homebridge.registerPlatform(PLUGIN_NAME, PLATFORM_NAME, PhormalabDimmerPlatform, false);
+    // register platform
+    api.registerPlatform(PLATFORM_NAME, PhormalabDimmerPlatform);
 }
 
 // implement the platform plugin class
@@ -50,7 +39,7 @@ class PhormalabDimmerPlatform  {
             log.error("Phormalab Dimmer configuration only supports up to four `lamp_names` connected to the four MCP4728 DAC outputs.")
         }
 
-        this.log(`Expecting MCP4728 I²C DAC at address 0x${this.i2c_address.toString(16)} on bus ${this.i2c_device}`);
+        log.info(`Expecting MCP4728 I²C DAC at address 0x${this.i2c_address.toString(16)} on bus ${this.i2c_device}`);
         this.comm = new comms.NcdI2C(1);
         this.dac = new MCP4728(this.i2c_address, this.comm, {
             eeprom_persist_1: true,
@@ -62,15 +51,13 @@ class PhormalabDimmerPlatform  {
         log.info('PhormalabDimmer plugin finished initializing');
     }
 
-    /*
-     * This method is called to retrieve all accessories exposed by the platform.
-     */
-    accessories(callback: (foundAccessories: AccessoryPlugin[]) => void): void {
+    // retrieve all accessories exposed by the platform
+    accessories(callback) {
         callback([
-            new PhormalabLamp(hap, this.log, this.dac, 1, this.lampNames[1]),
-            new PhormalabLamp(hap, this.log, this.dac, 2, this.lampNames[2]),
-            new PhormalabLamp(hap, this.log, this.dac, 3, this.lampNames[3]),
-            new PhormalabLamp(hap, this.log, this.dac, 4, this.lampNames[4])
+            new PhormalabLamp(this.api.hap, this.log, this.dac, 1, this.lampNames[1]),
+            new PhormalabLamp(this.api.hap, this.log, this.dac, 2, this.lampNames[2]),
+            new PhormalabLamp(this.api.hap, this.log, this.dac, 3, this.lampNames[3]),
+            new PhormalabLamp(this.api.hap, this.log, this.dac, 4, this.lampNames[4])
         ]);
     }
 }

@@ -1,27 +1,8 @@
-import {
-  AccessoryPlugin,
-  CharacteristicGetCallback,
-  CharacteristicSetCallback,
-  CharacteristicValue,
-  HAP,
-  Logging,
-  Service,
-  CharacteristicEventTypes
-} from "homebridge";
-
-export class PhormalabLamp implements AccessoryPlugin {
-
-    private lampStates = {
-                            On: false,
-                            Brightness:0
-                         };
-  
-    // This property must exist
-    name: string;
-  
-    private readonly lampService: Service;
-    private readonly informationService: Service;
-  
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PhormalabLamp = PhormalabLamp;
+class PhormalabLamp {
+    
     constructor(hap, log, dac, channel, name) {
         this.log = log;
         this.dac = dac;
@@ -30,7 +11,7 @@ export class PhormalabLamp implements AccessoryPlugin {
     
         this.lampService = new hap.Service.Lightbulb(name);
         this.lampService.getCharacteristic(hap.Characteristic.On)
-            .on(CharacteristicEventTypes.GET, (callback: CharacteristicGetCallback) => {
+            .on("get", (callback) => {
                 this.getBrightness(function(err, brightness) {
                     if (err) {
                         this.log('Error (getPowerState): '+err);
@@ -38,7 +19,7 @@ export class PhormalabLamp implements AccessoryPlugin {
                         return;
                     }
                     if (brightness == 0) {
-                        this.log('getPowerState: off');
+                        this.log('getPowerState: off (0%)');
                         callback(null, false);
                     } else {
                         this.log('getPowerState: on ('+brightness+'%)');
@@ -46,7 +27,7 @@ export class PhormalabLamp implements AccessoryPlugin {
                     }
                 }.bind(this));
             })
-            .on(CharacteristicEventTypes.SET, (value: CharacteristicValue, callback: CharacteristicSetCallback) => {
+            .on("set", (value, callback) => {
                 this.lampStates.On = value as boolean;
                 log.info("Lamp state was set to: " + (this.lampStates.On? "on": "off"));
                 
@@ -56,7 +37,7 @@ export class PhormalabLamp implements AccessoryPlugin {
                             log.info('Error (setPowerState): '+err);
                             callback(err);
                         } else {
-                            log.info('setPowerState: on');
+                            log.info('setPowerState: on (100%)');
                             callback();
                         }
                     }.bind(this));
@@ -66,7 +47,7 @@ export class PhormalabLamp implements AccessoryPlugin {
                             log.info('Error (setPowerState): '+err);
                             callback(err);
                         } else {
-                            log.info('setPowerState: off');
+                            log.info('setPowerState: off (0%)');
                             callback();
                         }
                     }.bind(this));
@@ -77,9 +58,9 @@ export class PhormalabLamp implements AccessoryPlugin {
             });
         
             // this.addOptionalCharacteristic(Characteristic.Brightness);
-        this.lampService.addCharacteristic(new Characteristic.Brightness())
-            .on(CharacteristicEventTypes.GET, this.getBrightness.bind(this.lampService))
-            .on(CharacteristicEventTypes.SET, this.setBrightness.bind(this.lampService));
+        this.lampService.addCharacteristic(new hap.Characteristic.Brightness())
+            .on("get", this.getBrightness.bind(this.lampService))
+            .on("set", this.setBrightness.bind(this.lampService));
   
         this.informationService = new hap.Service.AccessoryInformation()
             .setCharacteristic(hap.Characteristic.Manufacturer, "Phormalab")
@@ -90,29 +71,23 @@ export class PhormalabLamp implements AccessoryPlugin {
         log.info("Phormalab lamp '%s' created!", name);
     }
 
-    /*
-     * This method is optional to implement. It is called when HomeKit ask to identify the accessory.
-     * Typical this only ever happens at the pairing process.
-     */
-    identify(): void {
+    // optional, can be used to help identify the accessory
+    identify() {
         this.log("Identify!");
     }      
 
-    /*
-     * This method is called directly after creation of this instance.
-     * It should return all services which should be added to the accessory.
-     */
-    getServices(): Service[] {
-        return [
+    // called after accessory instantiation, returns all services that are associated with the accessory
+    getServices() {
+        return 
             this.informationService,
             this.lampService
         ];
     }
 
-    readBrightness(callback: CharacteristicGetCallback) {
+    readBrightness(callback) {
         dac.get().then((r) => {
             log.info(r);
-            log.info('Get brightness: ' + brightness);
+            log.info('Get brightness: ' + brightness + '%');
             setTimeout(setBrightness, 500);
         }).catch(console.log);
 
@@ -122,11 +97,11 @@ export class PhormalabLamp implements AccessoryPlugin {
         callback(null, brightness);
     }
         
-    setBrightness(value: CharacteristicValue, callback: CharacteristicSetCallback) {
+    setBrightness(value, callback) {
         this.lampStates.Brightness = value as number;
         dac.set(value, this.lampID, true).then((r) => {
             log.info(r);
-            log.info('Set brightness: ' + brightness);
+            log.info('Set brightness: ' + brightness + '%');
             setTimeout(readBrightness, 500);
         }).catch(console.log);
         
