@@ -84,7 +84,7 @@ module.exports = class PhormalabLamp {
         ];
     }
 
-    readBrightness(callback) {
+    getBrightness(callback) {
         dac.get().then((r) => {
             log.info(r);
             log.info('Get brightness: ' + brightness + '%');
@@ -102,7 +102,7 @@ module.exports = class PhormalabLamp {
         dac.set(value, this.lampID, true).then((r) => {
             log.info(r);
             log.info('Set brightness: ' + brightness + '%');
-            setTimeout(readBrightness, 500);
+            setTimeout(getBrightness, 500);
         }).catch(console.log);
         
         // you must call the callback function
