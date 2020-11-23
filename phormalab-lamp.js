@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 
-function PhormalabLamp(hap, log, dac, channel, name) {
+class PhormalabLamp {
     
-    //constructor(hap, log, dac, channel, name) {
+    constructor(hap, log, dac, channel, name) {
         this.log = log;
         this.dac = dac;
         this.channel = channel;
@@ -69,22 +69,22 @@ function PhormalabLamp(hap, log, dac, channel, name) {
             .setCharacteristic(hap.Characteristic.FirmwareRevision, "MCP4728")   
          
         log.info("Phormalab lamp '%s' created!", name);
-    //}
-}
+    }
+
     // optional, can be used to help identify the accessory
-    PhormalabLamp.prototype.identify = function() {
+    identify() {
         this.log("Identify!");
     }      
 
     // called after accessory instantiation, returns all services that are associated with the accessory
-    PhormalabLamp.prototype.getServices = function() {
+    getServices() {
         return [
             this.informationService,
             this.lampService
         ];
     }
 
-    PhormalabLamp.prototype.readBrightness = function(callback) {
+    readBrightness(callback) {
         dac.get().then((r) => {
             log.info(r);
             log.info('Get brightness: ' + brightness + '%');
@@ -97,7 +97,7 @@ function PhormalabLamp(hap, log, dac, channel, name) {
         callback(null, brightness);
     }
         
-    PhormalabLamp.prototype.setBrightness = function(value, callback) {
+    setBrightness(value, callback) {
         this.lampStates.Brightness = value;
         dac.set(value, this.lampID, true).then((r) => {
             log.info(r);
@@ -108,5 +108,5 @@ function PhormalabLamp(hap, log, dac, channel, name) {
         // you must call the callback function
         callback(null);
     }
-
+}
 exports.PhormalabLamp = PhormalabLamp;

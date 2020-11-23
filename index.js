@@ -1,9 +1,9 @@
 // require these libraries
 var comms = require('ncd-red-comm');
 var MCP4728 = require('ncd-red-mcp4728');
+var PhormalabLamp = require('./phormalab-lamp')
 
-// instantiate static platform plugin requirements and naming
-const PhormalabLamp = require('./phormalab-lamp')
+// platform plugin naming
 const PLATFORM_NAME = "PhormalabDimmer";
 const PLUGIN_NAME = "homebridge-phormalabdimmer";
 let hap;
