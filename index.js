@@ -32,18 +32,24 @@ class PhormalabDimmerPlatform  {
 
         log.info(`Expecting MCP4728 I²C DAC at address 0x${this.i2c_address.toString(16)} on bus ${this.i2c_device}`);
         this.comm = new comms.NcdI2C(1);
-        log.info(this.comm);
-        this.dac = new MCP4728(this.i2c_address, this.comm, {
-            eeprom_persist_1: true,
-            eeprom_persist_2: true,
-            eeprom_persist_3: true,
-            eeprom_persist_4: true,
-        });
-        log.info(this.dac);
+        //log.info(this.comm);
+        try {
+            this.dac = new MCP4728(this.i2c_address, this.comm, {
+                eeprom_persist_1: true,
+                eeprom_persist_2: true,
+                eeprom_persist_3: true,
+                eeprom_persist_4: true,
+            });
+        }
+        catch(err) {
+            log.error(err);
+            //log.error('MCP4728 was not reachable on the I²C bus. Check to make sure it is connected.');
+        }
+        //log.info(this.dac);
         
         // check if dac initialized
         if (!this.dac.initialized) {
-            log.error('MCP4728 was not reachable on the I²C bus. Check to make sure it is connected.')
+            log.error('MCP4728 was not reachable on the I²C bus. Check to make sure it is connected.');
         }
         
         log.info('PhormalabDimmer plugin finished initializing');
