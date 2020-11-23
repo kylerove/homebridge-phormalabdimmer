@@ -51,36 +51,25 @@ class PhormalabDimmerPlatform  {
 
     // retrieve all accessories exposed by the platform
     accessories(callback) {
-        this.log.info(this.lampNames);
-        if (this.lampNames.length == 1) {
-            this.log.info("Channel 1 lamp name: " + this.lampNames[0]);
+        if (this.lampNames.length == 1 and this.dac.initialized) {
             callback([
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 1, this.lampNames[0])
             ]);
         }
-        else if (this.lampNames.length == 2) {
-            this.log.info("Channel 1 lamp name: " + this.lampNames[0]);
-            this.log.info("Channel 2 lamp name: " + this.lampNames[1]);
+        else if (this.lampNames.length == 2 and this.dac.initialized) {
             callback([
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 1, this.lampNames[0]),
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 2, this.lampNames[1])
             ]);
         }
-        else if (this.lampNames.length == 3) {
-            this.log.info("Channel 1 lamp name: " + this.lampNames[0]);
-            this.log.info("Channel 2 lamp name: " + this.lampNames[1]);
-            this.log.info("Channel 3 lamp name: " + this.lampNames[2]);
+        else if (this.lampNames.length == 3 and this.dac.initialized) {
             callback([
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 1, this.lampNames[0]),
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 2, this.lampNames[1]),
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 3, this.lampNames[2])
             ]);
         }
-        else if (this.lampNames.length == 4) {
-            this.log.info("Channel 1 lamp name: " + this.lampNames[0]);
-            this.log.info("Channel 2 lamp name: " + this.lampNames[1]);
-            this.log.info("Channel 3 lamp name: " + this.lampNames[2]);
-            this.log.info("Channel 4 lamp name: " + this.lampNames[3]);
+        else if (this.lampNames.length == 4 and this.dac.initialized) {
             callback([
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 1, this.lampNames[0]),
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 2, this.lampNames[1]),

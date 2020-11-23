@@ -73,7 +73,7 @@ module.exports = class PhormalabLamp {
 
     // optional, can be used to help identify the accessory
     identify() {
-        this.log("Identify!");
+        this.log.info("Identify!");
     }      
 
     // called after accessory instantiation, returns all services that are associated with the accessory
@@ -85,28 +85,37 @@ module.exports = class PhormalabLamp {
     }
 
     getBrightness(callback) {
-        this.dac.get().then((r) => {
-            log.info(r);
-            log.info('Get brightness: ' + brightness + '%');
-            setTimeout(setBrightness, 500);
-        }).catch(console.log);
-
-        // you must call the callback function
-        // the first argument should be null if there were no errors
-        // the second argument should be the value to return
-        callback(null, brightness);
+        if (this.dac.initialized) {
+            this.dac.get().then((brightness) => {
+                this.log.info(brightness);
+                
+                // TO DO: parse get to provide just brightness for this.channel
+                
+                this.log.info('Get brightness: ' + brightness + '%');
+                setTimeout(setBrightness, 500);
+            }).catch(this.log.error);
+            callback(null, brightness);
+        } else {
+            // dac is offline, return null
+            this.log.error('Unable to get brightness, MCP4827 is not accessible.');
+            callback(null, null);
+        }
     }
         
     setBrightness(value, callback) {
         this.lampStates.Brightness = value;
-        this.dac.set(value, this.lampID, true).then((r) => {
-            log.info(r);
-            log.info('Set brightness: ' + brightness + '%');
-            setTimeout(getBrightness, 500);
-        }).catch(console.log);
+        if (this.dac.initialized) {
+            this.dac.set(value, this.channel, true).then((r) => {
+                this.log.info(r);
+                this.log.info('Set brightness: ' + value + '%');
+                setTimeout(getBrightness, 500);
+            }).catch(this.log.error);
+        } else {
+            // dac is offline, return null
+            this.log.error('Unable to set brightness, MCP4827 is not accessible.');
+        }
         
         // you must call the callback function
         callback(null);
     }
 }
-//exports.PhormalabLamp = PhormalabLamp;
