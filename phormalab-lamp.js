@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 
-class PhormalabLamp {
+module.exports = class PhormalabLamp {
     
     constructor(hap, log, dac, channel, name) {
         this.log = log;
@@ -109,4 +109,4 @@ class PhormalabLamp {
         callback(null);
     }
 }
-exports.PhormalabLamp = PhormalabLamp;
+//exports.PhormalabLamp = PhormalabLamp;
