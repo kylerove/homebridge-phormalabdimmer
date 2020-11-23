@@ -44,25 +44,25 @@ class PhormalabDimmerPlatform  {
 
     // retrieve all accessories exposed by the platform
     accessories(callback) {
-        log.info(this.lampNames);
+        this.log.info(this.lampNames);
         if (this.lampNames.length == 1) {
-            log.info("Channel 1 lamp name: " + this.lampNames[0]);
+            this.log.info("Channel 1 lamp name: " + this.lampNames[0]);
             callback([
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 1, this.lampNames[0])
             ]);
         }
         else if (this.lampNames.length == 2) {
-            log.info("Channel 1 lamp name: " + this.lampNames[0]);
-            log.info("Channel 2 lamp name: " + this.lampNames[1]);
+            this.log.info("Channel 1 lamp name: " + this.lampNames[0]);
+            this.log.info("Channel 2 lamp name: " + this.lampNames[1]);
             callback([
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 1, this.lampNames[0]),
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 2, this.lampNames[1])
             ]);
         }
         else if (this.lampNames.length == 3) {
-            log.info("Channel 1 lamp name: " + this.lampNames[0]);
-            log.info("Channel 2 lamp name: " + this.lampNames[1]);
-            log.info("Channel 3 lamp name: " + this.lampNames[2]);
+            this.log.info("Channel 1 lamp name: " + this.lampNames[0]);
+            this.log.info("Channel 2 lamp name: " + this.lampNames[1]);
+            this.log.info("Channel 3 lamp name: " + this.lampNames[2]);
             callback([
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 1, this.lampNames[0]),
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 2, this.lampNames[1]),
@@ -70,10 +70,10 @@ class PhormalabDimmerPlatform  {
             ]);
         }
         else if (this.lampNames.length == 4) {
-            log.info("Channel 1 lamp name: " + this.lampNames[0]);
-            log.info("Channel 2 lamp name: " + this.lampNames[1]);
-            log.info("Channel 3 lamp name: " + this.lampNames[2]);
-            log.info("Channel 4 lamp name: " + this.lampNames[3]);
+            this.log.info("Channel 1 lamp name: " + this.lampNames[0]);
+            this.log.info("Channel 2 lamp name: " + this.lampNames[1]);
+            this.log.info("Channel 3 lamp name: " + this.lampNames[2]);
+            this.log.info("Channel 4 lamp name: " + this.lampNames[3]);
             callback([
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 1, this.lampNames[0]),
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 2, this.lampNames[1]),
@@ -86,8 +86,6 @@ class PhormalabDimmerPlatform  {
 
 // initialize and register the platform
 module.exports = function(api) {
-    console.log("homebridge API version: " + api.version);
-    
     // save hap
     hap = api.hap;
 
