@@ -8,8 +8,8 @@ module.exports = class PhormalabLamp {
         this.dac = dac;
         this.channel = channel;
         this.name = name;
-        this.lampStates.On = false;
-        this.lampStates.Brightness = 0;
+        //this.lampStates.On = false;
+        //this.lampStates.Brightness = 0;
     
         this.lampService = new hap.Service.Lightbulb(name);
         this.lampService.getCharacteristic(hap.Characteristic.On)
@@ -37,11 +37,12 @@ module.exports = class PhormalabLamp {
 
             })
             .on("set", (value, callback) => {
-                this.lampStates.On = value;
-                log.info("Lamp state was set to: " + (this.lampStates.On? "on": "off"));
+                //this.lampStates.On = value;
+                log.info("Lamp state was set to: " + value);
                 
-                if (this.lampStates.On) {
-                    this.lampStates.Brightness = 100;
+                //if (this.lampStates.On) {
+                if (value) {
+                    //this.lampStates.Brightness = 100;
                     if (this.dac.initialized) {
                         this.dac.set(100, this.channel, true).then((r) => {
                             this.log.debug(r);
@@ -53,7 +54,8 @@ module.exports = class PhormalabLamp {
                         this.log.error('Unable to set brightness, MCP4827 is not accessible.');
                         callback('Unable to set brightness, MCP4827 is not accessible.');
                     }
-                } else if (!this.lampStates.On) {
+                //} else if (!this.lampStates.On) {
+                } else if (!value) {
                     if (this.dac.initialized) {
                         this.dac.set(0, this.channel, true).then((r) => {
                             this.log.debug(r);
@@ -92,7 +94,7 @@ module.exports = class PhormalabLamp {
                 }
             })
             .on("set", (value, callback) => {
-                this.lampStates.Brightness = value;
+                //this.lampStates.Brightness = value;
                 if (this.dac.initialized) {
                     this.dac.set(value, this.channel, true).then((r) => {
                         this.log.debug(r);
