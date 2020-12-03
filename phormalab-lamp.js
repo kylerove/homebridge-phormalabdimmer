@@ -8,6 +8,7 @@ module.exports = class PhormalabLamp {
         this.dac = dac;
         this.channel = channel;
         this.name = name;
+        this.channel_brightness = 0;
         //this.lampStates.On = false;
         //this.lampStates.Brightness = 0;
     
@@ -18,13 +19,25 @@ module.exports = class PhormalabLamp {
                     this.dac.get().then((brightness) => {
                         this.log.debug(brightness);
                         
-                        // TO DO: parse get to provide just brightness for this.channel
+                        // parse get to provide just brightness for this.channel
+                        if (this.channel == 1) {
+                            this.channel_brightness = brightness.channel_1.dac / 4096 * 100;
+                        }
+                        else if (this.channel == 2) {
+                            this.channel_brightness = brightness.channel_2.dac / 4096 * 100;
+                        }
+                        else if (this.channel == 3) {
+                            this.channel_brightness = brightness.channel_3.dac / 4096 * 100;
+                        }
+                        else if (this.channel == 4) {
+                            this.channel_brightness = brightness.channel_4.dac / 4096 * 100;
+                        }
                         
-                        if (brightness == 0) {
+                        if (this.channel_brightness == 0) {
                             this.log.info('getPowerState: off (0%)');
                             callback(null, false);
                         } else {
-                            this.log.info('getPowerState: on ('+brightness+'%)');
+                            this.log.info('getPowerState: on ('+this.channel_brightness+'%)');
                             callback(null, true);
                         }
                     }).catch(this.log.error);
@@ -82,10 +95,22 @@ module.exports = class PhormalabLamp {
                     this.dac.get().then((brightness) => {
                         this.log.debug(brightness);
                         
-                        // TO DO: parse get to provide just brightness for this.channel
+                        // parse get to provide just brightness for this.channel
+                        if (this.channel == 1) {
+                            this.channel_brightness = brightness.channel_1.dac / 4096 * 100;
+                        }
+                        else if (this.channel == 2) {
+                            this.channel_brightness = brightness.channel_2.dac / 4096 * 100;
+                        }
+                        else if (this.channel == 3) {
+                            this.channel_brightness = brightness.channel_3.dac / 4096 * 100;
+                        }
+                        else if (this.channel == 4) {
+                            this.channel_brightness = brightness.channel_4.dac / 4096 * 100;
+                        }
                         
-                        this.log.info('Get brightness: ' + brightness + '%');
-                        callback(null, brightness);
+                        this.log.info('Get brightness: ' + this.channel_brightness + '%');
+                        callback(null, this.channel_brightness);
                     }).catch(this.log.error);
                 } else {
                     // dac is offline, return null
