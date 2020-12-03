@@ -40,21 +40,17 @@ class PhormalabDimmerPlatform  {
             eeprom_persist_4: true,
         });
         
-        // debug
-        log.debug(this.dac);
-        
-        // we think this might initialize the dac
-        // by trying to read
+        // this initializes the dac
     	this.dac.get().then((r) => {
             // check if dac initialized
             if (!this.dac.initialized) {
                 // tell user we could not initialize the dac
-                log.error(this.dac.initialized);
+                log.debug(this.dac.initialized);
                 log.error('MCP4728 was not reachable on the I²C bus. Check to make sure it is connected.');
             }
             else {
                 // tell user we have initialized the dac
-                log.info(this.dac.initialized);
+                log.debug(this.dac.initialized);
                 log.info('Connected to MCP4728 via the I²C bus!');
             }
             
@@ -63,44 +59,27 @@ class PhormalabDimmerPlatform  {
     	});
     }
 
-    /*testSet() {
-    	var rand = Math.floor(Math.random() * 4096);
-    	this.dac.setAll(rand, true).then((r) => {
-    		this.log(rand);
-            this.log(this.dac);
-    		//setTimeout(this.testGet, 500);
-    	}).catch(this.log);
-    }
-        
-    testGet() {
-    	this.dac.get().then((r) => {
-    		this.log(r);
-            this.log(this.dac);
-    		//setTimeout(this.testSet, 1000);
-    	}).catch(this.log);
-    }*/
-
     // retrieve all accessories exposed by the platform
     accessories(callback) {
-        if (this.lampNames.length == 1 && this.dac.initialized) {
+        if (this.lampNames.length == 1) {
             callback([
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 1, this.lampNames[0])
             ]);
         }
-        else if (this.lampNames.length == 2 && this.dac.initialized) {
+        else if (this.lampNames.length == 2) {
             callback([
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 1, this.lampNames[0]),
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 2, this.lampNames[1])
             ]);
         }
-        else if (this.lampNames.length == 3 && this.dac.initialized) {
+        else if (this.lampNames.length == 3) {
             callback([
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 1, this.lampNames[0]),
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 2, this.lampNames[1]),
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 3, this.lampNames[2])
             ]);
         }
-        else if (this.lampNames.length == 4 && this.dac.initialized) {
+        else if (this.lampNames.length == 4) {
             callback([
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 1, this.lampNames[0]),
                 new PhormalabLamp(this.api.hap, this.log, this.dac, 2, this.lampNames[1]),
