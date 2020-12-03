@@ -42,6 +42,8 @@ class PhormalabDimmerPlatform  {
         
         // debug
         log.info(this.dac);
+        this.testGet();
+        this.testSet();
         
         // check if dac initialized
         if (!this.dac.initialized) {
@@ -49,6 +51,21 @@ class PhormalabDimmerPlatform  {
         }
         
         log.info('PhormalabDimmer plugin finished initializing');
+    }
+
+    function testSet() {
+    	var rand = Math.floor(Math.random() * 4096);
+    	this.dac.setAll(rand, true).then((r) => {
+    		this.log(rand);
+    		setTimeout(testGet, 500);
+    	}).catch(this.log);
+    }
+        
+    function testGet() {
+    	this.dac.get().then((r) => {
+    		this.log(r);
+    		setTimeout(testSet, 1000);
+    	}).catch(this.log);
     }
 
     // retrieve all accessories exposed by the platform
