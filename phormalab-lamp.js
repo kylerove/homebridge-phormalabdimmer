@@ -22,19 +22,19 @@ module.exports = class PhormalabLamp {
                         
                         // parse get to provide just brightness for this.channel
                         if (this.channel == 1) {
-                            this.channel_brightness = round(brightness.channel_1.dac / 4096 * 100);
+                            this.channel_brightness = Math.round(brightness.channel_1.dac / 4096 * 100);
                             this.dac_value = brightness.channel_1.dac;
                         }
                         else if (this.channel == 2) {
-                            this.channel_brightness = round(brightness.channel_2.dac / 4096 * 100);
+                            this.channel_brightness = Math.round(brightness.channel_2.dac / 4096 * 100);
                             this.dac_value = brightness.channel_2.dac;
                         }
                         else if (this.channel == 3) {
-                            this.channel_brightness = round(brightness.channel_3.dac / 4096 * 100);
+                            this.channel_brightness = Math.round(brightness.channel_3.dac / 4096 * 100);
                             this.dac_value = brightness.channel_3.dac;
                         }
                         else if (this.channel == 4) {
-                            this.channel_brightness = round(brightness.channel_4.dac / 4096 * 100);
+                            this.channel_brightness = Math.round(brightness.channel_4.dac / 4096 * 100);
                             this.dac_value = brightness.channel_4.dac;
                         }
                         
@@ -67,7 +67,7 @@ module.exports = class PhormalabLamp {
                 if (value) {
                     //this.lampStates.Brightness = 100;
                     if (this.dac.initialized) {
-                        this.dac_value = round(this.channel_brightness / 100 * 4096);
+                        this.dac_value = Math.round(this.channel_brightness / 100 * 4096);
                         this.dac.set(this.channel, this.dac_value, true).then((r) => {
                             log.debug('setPowerState  '+this.name+': on (dac '+this.dac_value+')');
                             log.info('setPowerState '+this.name+': on ('+this.channel_brightness+'%)');
@@ -112,19 +112,19 @@ module.exports = class PhormalabLamp {
                         
                         // parse get to provide just brightness for this.channel
                         if (this.channel == 1) {
-                            this.channel_brightness = round(brightness.channel_1.dac / 4096 * 100);
+                            this.channel_brightness = Math.round(brightness.channel_1.dac / 4096 * 100);
                             this.dac_value = brightness.channel_1.dac;
                         }
                         else if (this.channel == 2) {
-                            this.channel_brightness = round(brightness.channel_2.dac / 4096 * 100);
+                            this.channel_brightness = Math.round(brightness.channel_2.dac / 4096 * 100);
                             this.dac_value = brightness.channel_2.dac;
                         }
                         else if (this.channel == 3) {
-                            this.channel_brightness = round(brightness.channel_3.dac / 4096 * 100);
+                            this.channel_brightness = Math.round(brightness.channel_3.dac / 4096 * 100);
                             this.dac_value = brightness.channel_3.dac;
                         }
                         else if (this.channel == 4) {
-                            this.channel_brightness = round(brightness.channel_4.dac / 4096 * 100);
+                            this.channel_brightness = Math.round(brightness.channel_4.dac / 4096 * 100);
                             this.dac_value = brightness.channel_4.dac;
                         }
                         
@@ -143,10 +143,10 @@ module.exports = class PhormalabLamp {
             .on("set", (value, callback) => {
                 //this.lampStates.Brightness = value;
                 if (this.dac.initialized) {
-                    this.dac_value = round(value / 100 * 4096);
+                    this.dac_value = Math.round(value / 100 * 4096);
                     this.dac.set(this.channel, this.dac_value, true).then((r) => {
                         this.channel_brightness = value;
-                        this.dac_value = round(value / 100 * 4096);
+                        //this.dac_value = round(value / 100 * 4096);
                         log.debug('Set '+this.name+' brightness: dac ' + this.dac_value);
                         log.info('Set '+this.name+' brightness: ' + value + '%');
                     }).catch(function(e) {
