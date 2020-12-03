@@ -40,12 +40,10 @@ module.exports = class PhormalabLamp {
                         
                         // is lamp on or off
                         if (this.channel_brightness == 0) {
-                            log.info('getPowerState '+this.name+': off (dac '+this.dac_value+')');
-                            log.info('getPowerState '+this.name+': off (0%)');
+                            log.info('getPowerState '+this.name+': off (0%, dac '+this.dac_value+')');
                             callback(null, false);
                         } else {
-                            log.info('getPowerState '+this.name+': on (dac '+this.dac_value+')');
-                            log.info('getPowerState '+this.name+': on ('+this.channel_brightness+'%)');
+                            log.info('getPowerState '+this.name+': on ('+this.channel_brightness+'%, dac '+this.dac_value+')');
                             callback(null, true);
                         }
                     }).catch(function(e) {
@@ -69,8 +67,7 @@ module.exports = class PhormalabLamp {
                     if (this.dac.initialized) {
                         this.dac_value = Math.round(this.channel_brightness / 100 * 4096);
                         this.dac.set(this.channel, this.dac_value, true).then((r) => {
-                            log.debug('setPowerState  '+this.name+': on (dac '+this.dac_value+')');
-                            log.info('setPowerState '+this.name+': on ('+this.channel_brightness+'%)');
+                            log.info('setPowerState '+this.name+': on ('+this.channel_brightness+'%, dac '+this.dac_value+')');
                             callback(null);
                         }).catch(function(e) {
                             console.error(e); // "oh, no!"
@@ -128,8 +125,7 @@ module.exports = class PhormalabLamp {
                             this.dac_value = brightness.channel_4.dac;
                         }
                         
-                        log.debug('Get '+this.name+' brightness: dac ' + this.dac_value);
-                        log.info('Get '+this.name+' brightness: ' + this.channel_brightness + '%');
+                        log.info('Get '+this.name+' brightness: ' + this.channel_brightness + '% (dac '+this.dac_value+')');
                         callback(null, this.channel_brightness);
                     }).catch(function(e) {
                         console.error(e); // "oh, no!"
@@ -146,9 +142,8 @@ module.exports = class PhormalabLamp {
                     this.dac_value = Math.round(value / 100 * 4096);
                     this.dac.set(this.channel, this.dac_value, true).then((r) => {
                         this.channel_brightness = value;
-                        //this.dac_value = round(value / 100 * 4096);
-                        log.debug('Set '+this.name+' brightness: dac ' + this.dac_value);
-                        log.info('Set '+this.name+' brightness: ' + value + '%');
+                        this.dac_value = round(value / 100 * 4096);
+                        log.info('Set '+this.name+' brightness: ' + value + '% (dac '+this.dac_value+')');
                     }).catch(function(e) {
                         console.error(e); // "oh, no!"
                     });
