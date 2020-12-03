@@ -42,8 +42,9 @@ class PhormalabDimmerPlatform  {
         
         // debug
         log.info(this.dac);
+        // we think this might initialize the dac
         this.testGet();
-        this.testSet();
+        //this.testSet();
         
         // check if dac initialized
         if (!this.dac.initialized) {
@@ -58,7 +59,7 @@ class PhormalabDimmerPlatform  {
     	this.dac.setAll(rand, true).then((r) => {
     		this.log(rand);
             this.log(this.dac);
-    		setTimeout(this.testGet, 500);
+    		//setTimeout(this.testGet, 500);
     	}).catch(this.log);
     }
         
@@ -66,7 +67,7 @@ class PhormalabDimmerPlatform  {
     	this.dac.get().then((r) => {
     		this.log(r);
             this.log(this.dac);
-    		setTimeout(this.testSet, 1000);
+    		//setTimeout(this.testSet, 1000);
     	}).catch(this.log);
     }
 
