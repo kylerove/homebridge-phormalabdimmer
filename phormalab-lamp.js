@@ -125,7 +125,7 @@ module.exports = class PhormalabLamp {
                     this.dac.set(value, this.channel, true).then((r) => {
                         log.debug(r);
                         log.info('Set brightness: ' + value + '%');
-                    }).catch(this.log.error);
+                    }).catch(log.error);
                 } else {
                     // dac is offline, return null
                     log.error('Unable to set brightness, MCP4827 is not accessible.');
