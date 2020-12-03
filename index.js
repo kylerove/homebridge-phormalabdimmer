@@ -53,7 +53,7 @@ class PhormalabDimmerPlatform  {
         log.info('PhormalabDimmer plugin finished initializing');
     }
 
-    function testSet() {
+    testSet() {
     	var rand = Math.floor(Math.random() * 4096);
     	this.dac.setAll(rand, true).then((r) => {
     		this.log(rand);
@@ -61,7 +61,7 @@ class PhormalabDimmerPlatform  {
     	}).catch(this.log);
     }
         
-    function testGet() {
+    testGet() {
     	this.dac.get().then((r) => {
     		this.log(r);
     		setTimeout(testSet, 1000);
