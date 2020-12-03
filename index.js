@@ -40,6 +40,9 @@ class PhormalabDimmerPlatform  {
             eeprom_persist_4: true,
         });
         
+        // debug
+        log.info(this.dac);
+        
         // check if dac initialized
         if (!this.dac.initialized) {
             log.error('MCP4728 was not reachable on the I²C bus. Check to make sure it is connected.');
