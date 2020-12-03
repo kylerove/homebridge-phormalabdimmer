@@ -8,6 +8,8 @@ module.exports = class PhormalabLamp {
         this.dac = dac;
         this.channel = channel;
         this.name = name;
+        this.lampStates.On = false;
+        this.lampStates.Brightness = 0;
     
         this.lampService = new hap.Service.Lightbulb(name);
         this.lampService.getCharacteristic(hap.Characteristic.On)
