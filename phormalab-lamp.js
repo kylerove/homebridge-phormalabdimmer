@@ -60,9 +60,9 @@ module.exports = class PhormalabLamp {
                 if (value) {
                     //this.lampStates.Brightness = 100;
                     if (this.dac.initialized) {
-                        this.dac.set(this.channel, 100, true).then((r) => {
+                        this.dac.set(this.channel, this.channel_brightness, true).then((r) => {
                             log.debug(r);
-                            log.info('getPowerState '+this.name+': 100%');
+                            log.info('setPowerState '+this.name+': '+this.channel_brightness+'%');
                             callback(null);
                         }).catch(function(e) {
                             console.error(e); // "oh, no!"
@@ -77,7 +77,7 @@ module.exports = class PhormalabLamp {
                     if (this.dac.initialized) {
                         this.dac.set(this.channel, 0, true).then((r) => {
                             log.debug(r);
-                            log.info('getPowerState  '+this.name+': 0%');
+                            log.info('setPowerState  '+this.name+': 0%');
                             callback(null);
                         }).catch(function(e) {
                             console.error(e); // "oh, no!"
@@ -116,7 +116,7 @@ module.exports = class PhormalabLamp {
                             this.channel_brightness = round(brightness.channel_4.dac / 4096 * 100);
                         }
                         
-                        log.info('Get  '+this.name+' brightness: ' + this.channel_brightness + '%');
+                        log.info('Get '+this.name+' brightness: ' + this.channel_brightness + '%');
                         callback(null, this.channel_brightness);
                     }).catch(function(e) {
                         console.error(e); // "oh, no!"
@@ -132,7 +132,7 @@ module.exports = class PhormalabLamp {
                 if (this.dac.initialized) {
                     this.dac.set(this.channel, value, true).then((r) => {
                         log.debug(r);
-                        log.info('Set  '+this.name+' brightness: ' + value + '%');
+                        log.info('Set '+this.name+' brightness: ' + value + '%');
                     }).catch(function(e) {
                         console.error(e); // "oh, no!"
                     });
