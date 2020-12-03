@@ -17,7 +17,7 @@ module.exports = class PhormalabLamp {
             .on("get", (callback) => {
                 if (this.dac.initialized) {
                     this.dac.get().then((brightness) => {
-                        this.log.debug(brightness);
+                        log.debug(brightness);
                         
                         // parse get to provide just brightness for this.channel
                         if (this.channel == 1) {
@@ -33,17 +33,18 @@ module.exports = class PhormalabLamp {
                             this.channel_brightness = brightness.channel_4.dac / 4096 * 100;
                         }
                         
+                        // is lamp on or off
                         if (this.channel_brightness == 0) {
-                            this.log.info('getPowerState: off (0%)');
+                            log.info('getPowerState: off (0%)');
                             callback(null, false);
                         } else {
-                            this.log.info('getPowerState: on ('+this.channel_brightness+'%)');
+                            log.info('getPowerState: on ('+this.channel_brightness+'%)');
                             callback(null, true);
                         }
-                    }).catch(this.log.error);
+                    }).catch(log.error);
                 } else {
                     // dac is offline, return null
-                    this.log.error('Unable to get brightness, MCP4827 is not accessible.');
+                    log.error('Unable to get brightness, MCP4827 is not accessible.');
                     callback(null, null);
                 }
                 
@@ -58,30 +59,30 @@ module.exports = class PhormalabLamp {
                     //this.lampStates.Brightness = 100;
                     if (this.dac.initialized) {
                         this.dac.set(100, this.channel, true).then((r) => {
-                            this.log.debug(r);
-                            this.log.info('Set brightness: 100%');
+                            log.debug(r);
+                            log.info('Set '+this.name+' brightness: 100%');
                             callback(null);
-                        }).catch(this.log.error);
+                        }).catch(log.error);
                     } else {
                         // dac is offline, return null
-                        this.log.error('Unable to set brightness, MCP4827 is not accessible.');
+                        log.error('Unable to set brightness, MCP4827 is not accessible.');
                         callback('Unable to set brightness, MCP4827 is not accessible.');
                     }
                 //} else if (!this.lampStates.On) {
                 } else if (!value) {
                     if (this.dac.initialized) {
                         this.dac.set(0, this.channel, true).then((r) => {
-                            this.log.debug(r);
-                            this.log.info('Set brightness: 0%');
+                            log.debug(r);
+                            log.info('Set brightness: 0%');
                             callback(null);
-                        }).catch(this.log.error);
+                        }).catch(log.error);
                     } else {
                         // dac is offline, return null
-                        this.log.error('Unable to set brightness, MCP4827 is not accessible.');
+                        log.error('Unable to set brightness, MCP4827 is not accessible.');
                         callback('Unable to set brightness, MCP4827 is not accessible.');
                     }
                 } else {
-                    this.log('Error (setPowerState): unexpected no action taken');
+                    log.error('Error (setPowerState): unexpected no action taken');
                     callback('Error (setPowerState): unexpected no action taken');
                 }
             });
@@ -93,7 +94,7 @@ module.exports = class PhormalabLamp {
             .on("get", (callback) => {
                 if (this.dac.initialized) {
                     this.dac.get().then((brightness) => {
-                        this.log.debug(brightness);
+                        log.debug(brightness);
                         
                         // parse get to provide just brightness for this.channel
                         if (this.channel == 1) {
@@ -109,12 +110,12 @@ module.exports = class PhormalabLamp {
                             this.channel_brightness = brightness.channel_4.dac / 4096 * 100;
                         }
                         
-                        this.log.info('Get brightness: ' + this.channel_brightness + '%');
+                        log.info('Get brightness: ' + this.channel_brightness + '%');
                         callback(null, this.channel_brightness);
-                    }).catch(this.log.error);
+                    }).catch(log.error);
                 } else {
                     // dac is offline, return null
-                    this.log.error('Unable to get brightness, MCP4827 is not accessible.');
+                    log.error('Unable to get brightness, MCP4827 is not accessible.');
                     callback(null, null);
                 }
             })
@@ -122,12 +123,12 @@ module.exports = class PhormalabLamp {
                 //this.lampStates.Brightness = value;
                 if (this.dac.initialized) {
                     this.dac.set(value, this.channel, true).then((r) => {
-                        this.log.debug(r);
-                        this.log.info('Set brightness: ' + value + '%');
+                        log.debug(r);
+                        log.info('Set brightness: ' + value + '%');
                     }).catch(this.log.error);
                 } else {
                     // dac is offline, return null
-                    this.log.error('Unable to set brightness, MCP4827 is not accessible.');
+                    log.error('Unable to set brightness, MCP4827 is not accessible.');
                 }
                 
                 // you must call the callback function
