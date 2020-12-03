@@ -57,14 +57,16 @@ class PhormalabDimmerPlatform  {
     	var rand = Math.floor(Math.random() * 4096);
     	this.dac.setAll(rand, true).then((r) => {
     		this.log(rand);
-    		setTimeout(testGet, 500);
+            this.log(this.dac);
+    		setTimeout(this.testGet, 500);
     	}).catch(this.log);
     }
         
     testGet() {
     	this.dac.get().then((r) => {
     		this.log(r);
-    		setTimeout(testSet, 1000);
+            this.log(this.dac);
+    		setTimeout(this.testSet, 1000);
     	}).catch(this.log);
     }
 
