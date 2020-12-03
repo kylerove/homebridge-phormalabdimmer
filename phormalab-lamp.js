@@ -93,8 +93,8 @@ module.exports = class PhormalabLamp {
                 
                 log.info('Get brightness: ' + brightness + '%');
                 setTimeout(setBrightness, 500);
+                callback(null, brightness);
             }).catch(log.error);
-            callback(null, brightness);
         } else {
             // dac is offline, return null
             log.error('Unable to get brightness, MCP4827 is not accessible.');
