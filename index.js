@@ -34,10 +34,25 @@ class PhormalabDimmerPlatform  {
         log.info(`Expecting MCP4728 I²C DAC at address 0x${this.i2c_address.toString(16)} on bus ${this.i2c_device}`);
         this.comm = new comms.NcdI2C(1);
         this.dac = new MCP4728(this.i2c_address, this.comm, {
+            vr_1: 0,
             eeprom_persist_1: true,
+			eeprom_vr_1: 0,
+			eeprom_dac_1: 0,
+            
+            vr_2: 0,
             eeprom_persist_2: true,
+			eeprom_vr_2: 0,
+			eeprom_dac_2: 0,
+            
+            vr_3: 0,
             eeprom_persist_3: true,
+			eeprom_vr_3: 0,
+			eeprom_dac_3: 0,
+            
+            vr_4: 0,
             eeprom_persist_4: true,
+			eeprom_vr_4: 0,
+			eeprom_dac_4: 0,
         });
         
         // this initializes the dac
