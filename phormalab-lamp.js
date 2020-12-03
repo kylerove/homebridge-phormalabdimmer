@@ -21,16 +21,16 @@ module.exports = class PhormalabLamp {
                         
                         // parse get to provide just brightness for this.channel
                         if (this.channel == 1) {
-                            this.channel_brightness = brightness.channel_1.dac / 4096 * 100;
+                            this.channel_brightness = round(brightness.channel_1.dac / 4096 * 100);
                         }
                         else if (this.channel == 2) {
-                            this.channel_brightness = brightness.channel_2.dac / 4096 * 100;
+                            this.channel_brightness = round(brightness.channel_2.dac / 4096 * 100);
                         }
                         else if (this.channel == 3) {
-                            this.channel_brightness = brightness.channel_3.dac / 4096 * 100;
+                            this.channel_brightness = round(brightness.channel_3.dac / 4096 * 100);
                         }
                         else if (this.channel == 4) {
-                            this.channel_brightness = brightness.channel_4.dac / 4096 * 100;
+                            this.channel_brightness = round(brightness.channel_4.dac / 4096 * 100);
                         }
                         
                         // is lamp on or off
@@ -41,7 +41,9 @@ module.exports = class PhormalabLamp {
                             log.info('getPowerState: on ('+this.channel_brightness+'%)');
                             callback(null, true);
                         }
-                    }).catch(this.log.error);
+                    }).catch(function(e) {
+                        console.error(e); // "oh, no!"
+                    });
                 } else {
                     // dac is offline, return null
                     log.error('Unable to get brightness, MCP4827 is not accessible.');
@@ -62,7 +64,9 @@ module.exports = class PhormalabLamp {
                             log.debug(r);
                             log.info('Set '+this.name+' brightness: 100%');
                             callback(null);
-                        }).catch(this.log.error);
+                        }).catch(function(e) {
+                            console.error(e); // "oh, no!"
+                        });
                     } else {
                         // dac is offline, return null
                         log.error('Unable to set brightness, MCP4827 is not accessible.');
@@ -75,7 +79,9 @@ module.exports = class PhormalabLamp {
                             log.debug(r);
                             log.info('Set brightness: 0%');
                             callback(null);
-                        }).catch(this.log.error);
+                        }).catch(function(e) {
+                            console.error(e); // "oh, no!"
+                        });
                     } else {
                         // dac is offline, return null
                         log.error('Unable to set brightness, MCP4827 is not accessible.');
@@ -98,21 +104,23 @@ module.exports = class PhormalabLamp {
                         
                         // parse get to provide just brightness for this.channel
                         if (this.channel == 1) {
-                            this.channel_brightness = brightness.channel_1.dac / 4096 * 100;
+                            this.channel_brightness = round(brightness.channel_1.dac / 4096 * 100);
                         }
                         else if (this.channel == 2) {
-                            this.channel_brightness = brightness.channel_2.dac / 4096 * 100;
+                            this.channel_brightness = round(brightness.channel_2.dac / 4096 * 100);
                         }
                         else if (this.channel == 3) {
-                            this.channel_brightness = brightness.channel_3.dac / 4096 * 100;
+                            this.channel_brightness = round(brightness.channel_3.dac / 4096 * 100);
                         }
                         else if (this.channel == 4) {
-                            this.channel_brightness = brightness.channel_4.dac / 4096 * 100;
+                            this.channel_brightness = round(brightness.channel_4.dac / 4096 * 100);
                         }
                         
                         log.info('Get brightness: ' + this.channel_brightness + '%');
                         callback(null, this.channel_brightness);
-                    }).catch(this.log.error);
+                    }).catch(function(e) {
+                        console.error(e); // "oh, no!"
+                    });
                 } else {
                     // dac is offline, return null
                     log.error('Unable to get brightness, MCP4827 is not accessible.');
@@ -125,7 +133,9 @@ module.exports = class PhormalabLamp {
                     this.dac.set(value, this.channel, true).then((r) => {
                         log.debug(r);
                         log.info('Set brightness: ' + value + '%');
-                    }).catch(this.log.error);
+                    }).catch(function(e) {
+                        console.error(e); // "oh, no!"
+                    });
                 } else {
                     // dac is offline, return null
                     log.error('Unable to set brightness, MCP4827 is not accessible.');
