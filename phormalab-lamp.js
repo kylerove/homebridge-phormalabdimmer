@@ -60,9 +60,9 @@ module.exports = class PhormalabLamp {
                 if (value) {
                     //this.lampStates.Brightness = 100;
                     if (this.dac.initialized) {
-                        this.dac.set(this.channel, this.channel_brightness, true).then((r) => {
+                        this.dac.set(this.channel, 100, true).then((r) => {
                             log.debug(r);
-                            log.info('setPowerState '+this.name+': '+this.channel_brightness+'%');
+                            log.info('setPowerState '+this.name+': on');
                             callback(null);
                         }).catch(function(e) {
                             console.error(e); // "oh, no!"
@@ -77,7 +77,7 @@ module.exports = class PhormalabLamp {
                     if (this.dac.initialized) {
                         this.dac.set(this.channel, 0, true).then((r) => {
                             log.debug(r);
-                            log.info('setPowerState  '+this.name+': 0%');
+                            log.info('setPowerState  '+this.name+': off');
                             callback(null);
                         }).catch(function(e) {
                             console.error(e); // "oh, no!"
@@ -131,6 +131,7 @@ module.exports = class PhormalabLamp {
                 //this.lampStates.Brightness = value;
                 if (this.dac.initialized) {
                     this.dac.set(this.channel, value, true).then((r) => {
+                        this.channel_brightness = value;
                         log.debug(r);
                         log.info('Set '+this.name+' brightness: ' + value + '%');
                     }).catch(function(e) {
