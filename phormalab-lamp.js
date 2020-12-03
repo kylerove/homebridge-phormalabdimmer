@@ -81,8 +81,7 @@ module.exports = class PhormalabLamp {
                 } else if (!value) {
                     if (this.dac.initialized) {
                         this.dac.set(this.channel, 0, true).then((r) => {
-                            log.debug('setPowerState  '+this.name+': off (dac '+this.dac_value+')');
-                            log.info('setPowerState  '+this.name+': off (0%)');
+                            log.info('setPowerState  '+this.name+': off (0%, dac '+this.dac_value+')');
                             callback(null);
                         }).catch(function(e) {
                             console.error(e); // "oh, no!"
