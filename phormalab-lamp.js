@@ -142,7 +142,7 @@ module.exports = class PhormalabLamp {
                     this.dac_value = Math.round(value / 100 * 4096);
                     this.dac.set(this.channel, this.dac_value, true).then((r) => {
                         this.channel_brightness = value;
-                        this.dac_value = round(value / 100 * 4096);
+                        this.dac_value = Math.round(value / 100 * 4096);
                         log.info('Set '+this.name+' brightness: ' + value + '% (dac '+this.dac_value+')');
                     }).catch(function(e) {
                         console.error(e); // "oh, no!"
