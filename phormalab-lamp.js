@@ -12,7 +12,7 @@ module.exports = class PhormalabLamp {
         this.lampService = new hap.Service.Lightbulb(name);
         this.lampService.getCharacteristic(hap.Characteristic.On)
             .on("get", (callback) => {
-                this.getBrightness(function(err, brightness) {
+                this.getBrightness(this.dac, this.channel, function(err, brightness) {
                     if (err) {
                         this.log('Error (getPowerState): '+err);
                         callback(err);
@@ -32,7 +32,7 @@ module.exports = class PhormalabLamp {
                 log.info("Lamp state was set to: " + (this.lampStates.On? "on": "off"));
                 
                 if (this.lampStates.On) {
-                    this.setBrightness(100, function(err) {
+                    this.setBrightness(this.dac, this.channel, 100, function(err) {
                         if (err) {
                             log.info('Error (setPowerState): '+err);
                             callback(err);
@@ -42,7 +42,7 @@ module.exports = class PhormalabLamp {
                         }
                     }.bind(this));
                 } else if (!this.lampStates.On) {
-                    this.setBrightness(0, function(err) {
+                    this.setBrightness(this.dac, this.channel, 0, function(err) {
                         if (err) {
                             log.info('Error (setPowerState): '+err);
                             callback(err);
@@ -84,9 +84,9 @@ module.exports = class PhormalabLamp {
         ];
     }
 
-    getBrightness(callback) {
-        if (this.dac.initialized) {
-            this.dac.get().then((brightness) => {
+    getBrightness(dac, channel, callback) {
+        if (dac.initialized) {
+            dac.get().then((brightness) => {
                 this.log.info(brightness);
                 
                 // TO DO: parse get to provide just brightness for this.channel
@@ -102,10 +102,10 @@ module.exports = class PhormalabLamp {
         }
     }
         
-    setBrightness(value, callback) {
+    setBrightness(dac, channel, value, callback) {
         this.lampStates.Brightness = value;
-        if (this.dac.initialized) {
-            this.dac.set(value, this.channel, true).then((r) => {
+        if (dac.initialized) {
+            dac.set(value, channel, true).then((r) => {
                 this.log.info(r);
                 this.log.info('Set brightness: ' + value + '%');
                 setTimeout(getBrightness, 500);
