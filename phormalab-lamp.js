@@ -12,55 +12,98 @@ module.exports = class PhormalabLamp {
         this.lampService = new hap.Service.Lightbulb(name);
         this.lampService.getCharacteristic(hap.Characteristic.On)
             .on("get", (callback) => {
-                this.getBrightness(this.dac, this.channel, this.log, function(err, brightness) {
-                    if (err) {
-                        this.log('Error (getPowerState): '+err);
-                        callback(err);
-                        return;
-                    }
-                    if (brightness == 0) {
-                        this.log('getPowerState: off (0%)');
-                        callback(null, false);
-                    } else {
-                        this.log('getPowerState: on ('+brightness+'%)');
-                        callback(null, true);
-                    }
-                }.bind(this));
+                if (this.dac.initialized) {
+                    this.dac.get().then((brightness) => {
+                        this.log.debug(brightness);
+                        
+                        // TO DO: parse get to provide just brightness for this.channel
+                        
+                        if (brightness == 0) {
+                            this.log.info('getPowerState: off (0%)');
+                            callback(null, false);
+                        } else {
+                            this.log.info('getPowerState: on ('+brightness+'%)');
+                            callback(null, true);
+                        }
+                    }).catch(this.log.error);
+                } else {
+                    // dac is offline, return null
+                    this.log.error('Unable to get brightness, MCP4827 is not accessible.');
+                    callback(null, null);
+                }
+                
+
             })
             .on("set", (value, callback) => {
                 this.lampStates.On = value;
                 log.info("Lamp state was set to: " + (this.lampStates.On? "on": "off"));
                 
                 if (this.lampStates.On) {
-                    this.setBrightness(this.dac, this.channel, 100, this.log, function(err) {
-                        if (err) {
-                            log.info('Error (setPowerState): '+err);
-                            callback(err);
-                        } else {
-                            log.info('setPowerState: on (100%)');
-                            callback();
-                        }
-                    }.bind(this));
+                    this.lampStates.Brightness = 100;
+                    if (this.dac.initialized) {
+                        this.dac.set(100, this.channel, true).then((r) => {
+                            this.log.debug(r);
+                            this.log.info('Set brightness: 100%');
+                            callback(null);
+                        }).catch(this.log.error);
+                    } else {
+                        // dac is offline, return null
+                        this.log.error('Unable to set brightness, MCP4827 is not accessible.');
+                        callback('Unable to set brightness, MCP4827 is not accessible.');
+                    }
                 } else if (!this.lampStates.On) {
-                    this.setBrightness(this.dac, this.channel, 0, this.log, function(err) {
-                        if (err) {
-                            log.info('Error (setPowerState): '+err);
-                            callback(err);
-                        } else {
-                            log.info('setPowerState: off (0%)');
-                            callback();
-                        }
-                    }.bind(this));
+                    if (this.dac.initialized) {
+                        this.dac.set(0, this.channel, true).then((r) => {
+                            this.log.debug(r);
+                            this.log.info('Set brightness: 0%');
+                            callback(null);
+                        }).catch(this.log.error);
+                    } else {
+                        // dac is offline, return null
+                        this.log.error('Unable to set brightness, MCP4827 is not accessible.');
+                        callback('Unable to set brightness, MCP4827 is not accessible.');
+                    }
                 } else {
                     this.log('Error (setPowerState): unexpected no action taken');
-                    callback();
+                    callback('Error (setPowerState): unexpected no action taken');
                 }
             });
         
             // this.addOptionalCharacteristic(Characteristic.Brightness);
         this.lampService.addCharacteristic(new hap.Characteristic.Brightness())
-            .on("get", this.getBrightness.bind(this.lampService))
-            .on("set", this.setBrightness.bind(this.lampService));
+            //.on("get", this.getBrightness.bind(this.lampService))
+            //.on("set", this.setBrightness.bind(this.lampService));
+            .on("get", (callback) => {
+                if (this.dac.initialized) {
+                    this.dac.get().then((brightness) => {
+                        this.log.debug(brightness);
+                        
+                        // TO DO: parse get to provide just brightness for this.channel
+                        
+                        this.log.info('Get brightness: ' + brightness + '%');
+                        callback(null, brightness);
+                    }).catch(this.log.error);
+                } else {
+                    // dac is offline, return null
+                    this.log.error('Unable to get brightness, MCP4827 is not accessible.');
+                    callback(null, null);
+                }
+            })
+            .on("set", (value, callback) => {
+                this.lampStates.Brightness = value;
+                if (this.dac.initialized) {
+                    this.dac.set(value, this.channel, true).then((r) => {
+                        this.log.debug(r);
+                        this.log.info('Set brightness: ' + value + '%');
+                    }).catch(this.log.error);
+                } else {
+                    // dac is offline, return null
+                    this.log.error('Unable to set brightness, MCP4827 is not accessible.');
+                }
+                
+                // you must call the callback function
+                callback(null);
+            });
   
         this.informationService = new hap.Service.AccessoryInformation()
             .setCharacteristic(hap.Characteristic.Manufacturer, "Phormalab")
@@ -84,7 +127,7 @@ module.exports = class PhormalabLamp {
         ];
     }
 
-    getBrightness(dac, channel, log, callback) {
+    /*getBrightness(dac, channel, log, callback) {
         if (dac.initialized) {
             dac.get().then((brightness) => {
                 log.info(brightness);
@@ -117,5 +160,5 @@ module.exports = class PhormalabLamp {
         
         // you must call the callback function
         callback(null);
-    }
+    }*/
 }
