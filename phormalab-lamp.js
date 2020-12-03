@@ -35,10 +35,10 @@ module.exports = class PhormalabLamp {
                         
                         // is lamp on or off
                         if (this.channel_brightness == 0) {
-                            log.info('getPowerState: off (0%)');
+                            log.info('getPowerState '+this.name+': off (0%)');
                             callback(null, false);
                         } else {
-                            log.info('getPowerState: on ('+this.channel_brightness+'%)');
+                            log.info('getPowerState '+this.name+': on ('+this.channel_brightness+'%)');
                             callback(null, true);
                         }
                     }).catch(function(e) {
@@ -46,7 +46,7 @@ module.exports = class PhormalabLamp {
                     });
                 } else {
                     // dac is offline, return null
-                    log.error('Unable to get brightness, MCP4827 is not accessible.');
+                    log.error('Unable to get brightness of '+this.name+', MCP4827 is not accessible.');
                     callback(null, null);
                 }
                 
@@ -54,7 +54,7 @@ module.exports = class PhormalabLamp {
             })
             .on("set", (value, callback) => {
                 //this.lampStates.On = value;
-                log.info("Lamp state was set to: " + value);
+                //log.info("Lamp state was set to: " + value);
                 
                 //if (this.lampStates.On) {
                 if (value) {
@@ -62,34 +62,34 @@ module.exports = class PhormalabLamp {
                     if (this.dac.initialized) {
                         this.dac.set(this.channel, 100, true).then((r) => {
                             log.debug(r);
-                            log.info('Set '+this.name+' brightness: 100%');
+                            log.info('getPowerState '+this.name+': 100%');
                             callback(null);
                         }).catch(function(e) {
                             console.error(e); // "oh, no!"
                         });
                     } else {
                         // dac is offline, return null
-                        log.error('Unable to set brightness, MCP4827 is not accessible.');
-                        callback('Unable to set brightness, MCP4827 is not accessible.');
+                        log.error('Unable to turn on '+this.name+', MCP4827 is not accessible.');
+                        callback('Unable to turn on '+this.name+', MCP4827 is not accessible.');
                     }
                 //} else if (!this.lampStates.On) {
                 } else if (!value) {
                     if (this.dac.initialized) {
                         this.dac.set(this.channel, 0, true).then((r) => {
                             log.debug(r);
-                            log.info('Set brightness: 0%');
+                            log.info('getPowerState  '+this.name+': 0%');
                             callback(null);
                         }).catch(function(e) {
                             console.error(e); // "oh, no!"
                         });
                     } else {
                         // dac is offline, return null
-                        log.error('Unable to set brightness, MCP4827 is not accessible.');
-                        callback('Unable to set brightness, MCP4827 is not accessible.');
+                        log.error('Unable to turn off '+this.name+', MCP4827 is not accessible.');
+                        callback('Unable to turn off '+this.name+', MCP4827 is not accessible.');
                     }
                 } else {
-                    log.error('Error (setPowerState): unexpected no action taken');
-                    callback('Error (setPowerState): unexpected no action taken');
+                    log.error('Error (setPowerState) '+this.name+': unexpected no action taken');
+                    callback('Error (setPowerState) '+this.name+': unexpected no action taken');
                 }
             });
         
@@ -116,14 +116,14 @@ module.exports = class PhormalabLamp {
                             this.channel_brightness = round(brightness.channel_4.dac / 4096 * 100);
                         }
                         
-                        log.info('Get brightness: ' + this.channel_brightness + '%');
+                        log.info('Get  '+this.name+' brightness: ' + this.channel_brightness + '%');
                         callback(null, this.channel_brightness);
                     }).catch(function(e) {
                         console.error(e); // "oh, no!"
                     });
                 } else {
                     // dac is offline, return null
-                    log.error('Unable to get brightness, MCP4827 is not accessible.');
+                    log.error('Unable to get brightness of '+this.name+', MCP4827 is not accessible.');
                     callback(null, null);
                 }
             })
@@ -132,13 +132,13 @@ module.exports = class PhormalabLamp {
                 if (this.dac.initialized) {
                     this.dac.set(this.channel, value, true).then((r) => {
                         log.debug(r);
-                        log.info('Set brightness: ' + value + '%');
+                        log.info('Set  '+this.name+' brightness: ' + value + '%');
                     }).catch(function(e) {
                         console.error(e); // "oh, no!"
                     });
                 } else {
                     // dac is offline, return null
-                    log.error('Unable to set brightness, MCP4827 is not accessible.');
+                    log.error('Unable to set brightness of '+this.name+', MCP4827 is not accessible.');
                 }
                 
                 // you must call the callback function
