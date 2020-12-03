@@ -53,7 +53,8 @@ module.exports = class PhormalabLamp {
             .on("set", (value, callback) => {
                 //this.lampStates.On = value;
                 log.info("Lamp state was set to: " + value);
-                
+                log.debug(this.dac.initialized);
+                log.debug(dac.initialized);
                 //if (this.lampStates.On) {
                 if (value) {
                     //this.lampStates.Brightness = 100;
