@@ -1,7 +1,7 @@
 {
     "name": "homebridge-phormalabdimmer",
     "displayName": "Homebridge Phormalab Dimmer",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "Accessory plugin to manage Phormalab infrared lamps via I²C bus and proportional output solid state relay",
     "license": "MIT",
     "keywords": [
@@ -9,7 +9,8 @@
         "homebridge",
         "phormalab",
         "solid state relay",
-        "i2c"
+        "i2c",
+        "MCP4728"
     ],
     "repository": {
         "type": "git",
