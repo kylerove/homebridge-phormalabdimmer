@@ -5,7 +5,7 @@
 
 [Homebridge](https://homebridge.io) accessory plugin for [Phormalab infrared lamps](https://www.phormalab.it) that are connected to an I²C-capable device like a [Raspberry Pi](https://www.raspberrypi.org) connected to an [I²C-compatible MCP4728 DAC](https://www.adafruit.com/product/4470). This in turn, will provide input into a [proportional output solid state relay](http://www.crydom.com/en/products/control-relays/pmp-series/). If you wanted to repurpose the code here to run dimmable/proportional output from the MCP4728, should be easy to do. Code only allows for 4 devices.
 
-[![NPM](https://nodei.co/npm/homebridge-phormalabdimmer.png?compact=true)](https://npmjs.org/package/homebridge-phormalabdimmer)
+[![NPM Downloads](https://img.shields.io/npm/dm/homebridge-phormalabdimmer.svg?style=flat)](https://npmjs.org/package/homebridge-phormalabdimmer)
 
 [![Phormalab Hotdoor Infrared Heating Lamp](images/hotdoor.png)](https://www.phormalab.it)
 
